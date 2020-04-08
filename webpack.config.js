@@ -5,10 +5,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    watch: true,
+    mode: "development",
     entry: ['./src/index.js','./src/sass/main.scss'],
     output: {
-        path: path.join(__dirname, './dist'),
+        path: path.join(__dirname, '/dist'),
         filename: 'script.js',
     },
     module: {
@@ -60,6 +60,9 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             filename: 'style.css'
-        })
-    ]
+        }),
+    ],
+    devServer: {
+        open: true,
+    },
 }
