@@ -6,9 +6,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     watch: true,
-    entry: ['./src/index.js','./src/sass/styles.scss'],
+    entry: ['./src/index.js','./src/sass/main.scss'],
     output: {
-        path: path.join(__dirname, '/dist'),
+        path: path.join(__dirname, './dist'),
         filename: 'script.js',
     },
     module: {
