@@ -1,0 +1,51 @@
+.navigation {
+    position: relative;
+}
+
+.menu {
+    user-select: none;
+    z-index: 1;
+    display: block;
+    position: fixed;
+    list-style:none;
+    padding: 130px 80px;
+    margin: 0;
+    box-sizing: border-box;
+    width: 340px;
+    background: linear-gradient(to right, $color-gradient, $color-train);
+    height: 100%;
+    top: 0;
+    left: -340px;
+    transition: left 0.2s;
+    &-item{
+        & a {
+            color: $color-black;
+            &:hover {
+                color: #fff;
+            }
+        }
+        font-size: 22px;
+        margin: 0 0 20px;
+        &::before {
+            color: brown;
+            content: "";
+            width: 13px;
+            height: 12px;
+            position: absolute;
+            left: 20px;
+            background-repeat: no-repeat;
+        }
+    }
+}
+
+.menu-play {
+    background: linear-gradient(to right, $color-gradient, $color-play);
+}
+
+.menu-show {
+    left: 0;
+}
+
+.active-item {
+    text-decoration: underline;
+}

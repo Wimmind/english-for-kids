@@ -6,13 +6,33 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;display=swap" rel="stylesheet">
     <title>rslang</title>
 </head>
-<body>
+<body id="body">
     <div class="wrapper">
         <div class="header-container">
-            <span class="hamburger"><span class="hamburger__line"></span></span>
-            <div class="switch-button"></div>
+            <nav role="navigation" class="navigation">
+                <span class="hamburger"><span class="hamburger__line"></span></span>
+                <ul class="menu">
+                    <li class="menu-item active-item"><a href="">Main Page</a></li>
+                    <li class="menu-item"><a href="">Action (set A)</a></li>
+                    <li class="menu-item"><a href="">Action (set B)</a></li>
+                    <li class="menu-item"><a href="">Action (set C)</a></li>
+                    <li class="menu-item"><a href="">Adjective</a></li>
+                    <li class="menu-item"><a href="">Animal (set A)</a></li>
+                    <li class="menu-item"><a href="">Animal (set B)</a></li>
+                    <li class="menu-item"><a href="">Clothes</a></li>
+                    <li class="menu-item"><a href="">Emotions</a></li>
+                </ul>
+            </nav>
+            <div class="onoffswitch">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+                <label class="onoffswitch-label" for="myonoffswitch">
+                    <span class="onoffswitch-inner"></span>
+                    <span class="onoffswitch-switch"></span>
+                </label>
+            </div>
         </div>
         <div class="container">
+            <div class="rating"></div>
             <a href="" class="main-card">
                 <div class="main-card__img"></div>
             </a>
