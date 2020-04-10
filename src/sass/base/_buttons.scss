@@ -27,15 +27,17 @@
     box-sizing: border-box;
 }
 .onoffswitch-inner:before {
-    content: "TRAIN";
+    text-transform: uppercase;
+    content: "train";
     padding-left: 10px;
     background-color: $color-train; 
     color: black;
 }
 .onoffswitch-inner:after {
-    content: "PLAY";
+    text-transform: uppercase;
+    content: "play";
     padding-right: 10px;
-    background-color: #f1f32d; 
+    background-color: $color-play; 
     color: black;
     text-align: right;
 }

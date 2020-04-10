@@ -7,10 +7,13 @@ body {
     background: linear-gradient(to top, $color-gradient, $color-train);
     background-repeat: no-repeat;
     height: 100vh;
+    @include media-laptop {
+        height: 100%;
+    }
 }
 
 .body_play {
-    background: linear-gradient(to top, $color-gradient, #f1f32d);
+    background: linear-gradient(to top, $color-gradient, $color-play);
 }
 
 .hidden {
@@ -19,4 +22,8 @@ body {
 
 a {
     text-decoration: none;
+}
+
+h2 {
+    font-weight: 700;
 }
