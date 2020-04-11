@@ -31,7 +31,6 @@ window.onload = () => {
   });
 
   containerCard.addEventListener('click',(event)=>{
-    menu.style.left='-340px';
     if (event.target.classList.contains('main-card')){
       containerCard.innerHTML ='';
       let sectionName = event.target.getAttribute('value');
