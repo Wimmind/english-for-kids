@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "npm run clear -s && webpack --progress",
+    "build": "webpack --progress",
     "clear": "del-cli dist",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix"
