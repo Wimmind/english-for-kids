@@ -39,3 +39,22 @@
 .hamburger-active {
     display: none;
 }
+
+.hamburger_active {
+    &:before {
+        @extend %hamburger-line;
+        top: 10px;
+        left: 0;
+        transform: rotate(45deg);
+    }
+    &:after {
+        @extend %hamburger-line;
+        bottom: 8px;
+        left: 0;
+        transform: rotate(-45deg);
+    }
+}
+
+.hamburger__line_active {
+    display: none;
+}

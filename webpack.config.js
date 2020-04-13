@@ -56,7 +56,6 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            favicon: 'src/assets/image/favicon.ico',
             template: 'src/index.html',
             filename: 'index.html'
         }),
@@ -64,7 +63,7 @@ module.exports = {
             filename: 'style.css'
         }),
         new CopyWebpackPlugin([
-            {from: './src/assets/image', to: './assets/image/'}
+            {from: './src/assets/image', to: './assets/image'}
         ])
     ],
     devServer: {
