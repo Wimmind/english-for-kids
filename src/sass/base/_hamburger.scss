@@ -41,20 +41,7 @@
 }
 
 .hamburger_active {
-    &:before {
-        @extend %hamburger-line;
-        top: 10px;
-        left: 0;
-        transform: rotate(45deg);
-    }
-    &:after {
-        @extend %hamburger-line;
-        bottom: 8px;
-        left: 0;
-        transform: rotate(-45deg);
-    }
+    transform: rotate(90deg);
+    transition: transform ease 0.6s;
 }
 
-.hamburger__line_active {
-    display: none;
-}

@@ -57,3 +57,20 @@
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
     right: 0px; 
 }
+
+
+.button-play {
+    height: 50px;
+    width: 100%;
+    text-align: center;
+    & button {
+        cursor: pointer;
+        color: black;
+        height: 100%;
+        background: linear-gradient( -45deg , #fff, $color-play);
+        &_game {
+            color: transparent;
+            border-radius: 50%;
+        }
+    }
+}
