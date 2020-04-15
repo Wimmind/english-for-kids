@@ -8,6 +8,12 @@ body {
     @include media-laptop {
         height: 100%;
     }
+    &_result {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+    }
 }
 
 .hidden {

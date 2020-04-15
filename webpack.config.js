@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+
 module.exports = {
     mode: "development",
     entry: ['./src/index.js','./src/sass/main.scss'],
@@ -47,15 +48,21 @@ module.exports = {
                 options: { outputPath: 'assets/fonts',name: "[name].[ext]"},
             },
             {
-                test: /\.(png|svg|jpe?g|gif)$/i,
+                test: /\.(png|svg|jpe?g|gif|ico)$/i,
                 loader: 'file-loader',
                 options: { outputPath: 'assets/image',name: "[name].[ext]" },
+            },
+            {
+                test: /\.(mp3)$/i,
+                loader: 'file-loader',
+                options: { outputPath: 'assets/audio',name: "[name].[ext]" },
             }
         ]
     },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
+            favicon: 'src/assets/icon/favicon.ico',
             template: 'src/index.html',
             filename: 'index.html'
         }),
@@ -63,7 +70,8 @@ module.exports = {
             filename: 'style.css'
         }),
         new CopyWebpackPlugin([
-            {from: './src/assets/image', to: './assets/image'}
+            {from: './src/assets/image', to: './assets/image'},
+            {from: './src/assets/audio', to: './assets/audio'}
         ])
     ],
     devServer: {

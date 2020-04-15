@@ -3,8 +3,14 @@ import { cards } from './js/cards';
 const containerCard = document.querySelector('.container');
 const mainPage = containerCard.innerHTML;
 const menu = document.querySelector('.menu');
-const audio = document.querySelector('audio');
+const audio = new Audio();
+const audioEffects = new Audio();
+const ratingContainer = document.querySelector('.rating')
 
+const body =document.querySelector('#body');
+
+
+let game = false;
 
 const checkbox = document.querySelector('#checkboxMode');
 
@@ -69,6 +75,10 @@ document.querySelector(('#body')).addEventListener('click', (event) => {
 
 // отрисовка карточек
 const drawCardsSection = (card, sectionName) => {
+  i=0;
+  audioSet =[];  
+  audioValue =[]; 
+  game=false;
   containerCard.innerHTML = '';
   if (checkbox.checked) {
     if (sectionName === 'main') {
@@ -130,14 +140,20 @@ const drawCardsSection = (card, sectionName) => {
   }
 };
 
+let i = 0;
+let audioSet =[];  
+let audioValue =[]; 
+
 
 containerCard.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
 
+
   if (card.classList.contains('main-card')) {
     drawCardsSection(card, sectionName);
   }
+
   if (checkbox.checked) {
     if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
       audio.src = `https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`;
@@ -149,25 +165,73 @@ containerCard.addEventListener('click', (event) => {
         card.offsetParent.onmouseleave = () => card.offsetParent.classList.remove('translate');
       }
     }
-  } else if (card.classList.contains('btn-game')) {
-    let audioSet =[];
-    document.querySelectorAll('.front-side').forEach((item) => {
-      const value = item.getAttribute('value');
-      audioSet.push(`https://wooordhunt.ru/data/sound/word/us/mp3/${value}.mp3`)
-    });
-    console.log(audioSet)
+  } 
+  else {
+ 
+    if (card.classList.contains('btn-game')) { 
+      if (!game){
+        document.querySelectorAll('.front-side').forEach((item) => {
+          const value = item.getAttribute('value');
+          audioValue.push(value)     
+        });
+        audioValue.sort(function() {
+          return 0.5 - Math.random(); 
+        });
+        audioValue.forEach((item) => {
+          audioSet.push(`https://wooordhunt.ru/data/sound/word/us/mp3/${item}.mp3`)
+        });
+        game = true; 
+      }
+      playAudio(audioSet[i]); 
+    }
+
+    if (card.classList.contains('front-side')){ 
+      if (game){ 
+        let errorCounter = 0;
+        if (sectionName===audioValue[i]){ 
+          audioEffects.src = './assets/audio/good.mp3'; 
+          audioEffects.play() 
+          const resultGood = document.createElement('div');
+          resultGood.classList.add('result_good')
+          ratingContainer.prepend(resultGood);
+          i++; 
+          card.classList.add('card-right');
+          setTimeout(() => { 
+            playAudio(audioSet[i])
+          }, 2000);
+        }
+        else {
+          audioEffects.src = './assets/audio/bad.mp3'; 
+          audioEffects.play() 
+          const resultBad = document.createElement('div');
+          resultBad.classList.add('result_bad')
+          ratingContainer.prepend(resultBad);
+          errorCounter+=1;
+        }
+
+        if (i===8){
+          i=0;
+          audioSet =[];  
+          audioValue =[]; 
+          game=false;
+          document.querySelector('.wrapper').classList.add('body_result');
+          //body.innerHTML = `<div class="result-game" style="background-image: url(./assets/image/results/success.jpg);"></div>`
+          setTimeout(() => { 
+            document.querySelector('.wrapper').classList.remove('body_result');
+          }, 3000);
+          drawCardsSection(card, 'main');
+          document.querySelector('.rating').innerHTML='';
+        }
+      } 
+    }
   }
 });
 
 
-
-
-
-
-
-
-
-
+const playAudio = (item) => {
+  audio.src = item; 
+  audio.play() 
+}
 
 
 menu.addEventListener('click', (event) => {
@@ -195,8 +259,65 @@ menu.addEventListener('click', (event) => {
         card.parentElement.onmouseleave = () => card.parentElement.classList.remove('translate');
       }
     }
-  } else if (card.classList.contains('btn-game')) {
-    alert('хай');
+  } 
+  else {
+
+    if (card.classList.contains('btn-game')) { 
+      if (!game){
+        document.querySelectorAll('.front-side').forEach((item) => {
+          const value = item.getAttribute('value');
+          audioValue.push(value)     
+        });
+        audioValue.sort(function() {
+          return 0.5 - Math.random(); 
+        });
+        audioValue.forEach((item) => {
+          audioSet.push(`https://wooordhunt.ru/data/sound/word/us/mp3/${item}.mp3`)
+        });
+        game = true; 
+      }
+      playAudio(audioSet[i]); 
+    }
+
+    if (card.classList.contains('front-side')){ 
+      if (game){ 
+        let errorCounter = 0;
+        if (sectionName===audioValue[i]){ 
+          audioEffects.src = './assets/audio/good.mp3'; 
+          audioEffects.play() 
+          const resultGood = document.createElement('div');
+          resultGood.classList.add('result_good')
+          ratingContainer.prepend(resultGood);
+          i++; 
+          card.classList.add('card-right');
+          setTimeout(() => { 
+            playAudio(audioSet[i])
+          }, 2000);
+        }
+        else {
+          audioEffects.src = './assets/audio/bad.mp3'; 
+          audioEffects.play() 
+          const resultBad = document.createElement('div');
+          resultBad.classList.add('result_bad')
+          ratingContainer.prepend(resultBad);
+          errorCounter+=1;
+        }
+
+        if (i===8){
+          i=0;
+          audioSet =[];  
+          audioValue =[]; 
+          game=false;
+          document.querySelector('.wrapper').classList.add('body_result');
+          //body.innerHTML = `<div class="result-game" style="background-image: url(./assets/image/results/success.jpg);"></div>`
+          setTimeout(() => { 
+            document.querySelector('.wrapper').classList.remove('body_result');
+          }, 3000);
+          drawCardsSection(card, 'main');
+          document.querySelector('.rating').innerHTML='';
+        }
+      } 
+    }
   }
 });
 

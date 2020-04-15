@@ -1,0 +1,14 @@
+.result {
+    &_good {
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        background: url(../assets/icon/star-win.svg);
+    }
+    &_bad {
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        background: url(../assets/icon/star.svg);
+    }
+}
