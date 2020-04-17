@@ -1,14 +1,16 @@
 .result {
     &_good {
         display: inline-block;
-        height: 64px;
-        width: 64px;
+        height: 45px;
+        width: 45px;
         background: url(../assets/icon/star-win.svg);
+        background-size: cover;
     }
     &_bad {
         display: inline-block;
-        height: 64px;
-        width: 64px;
+        height: 45px;
+        width: 45px;
         background: url(../assets/icon/star.svg);
+        background-size: cover;
     }
 }

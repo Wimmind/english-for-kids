@@ -5,9 +5,11 @@ const mainPage = containerCard.innerHTML;
 const menu = document.querySelector('.menu');
 const audio = new Audio();
 const audioEffects = new Audio();
+const audioEnd = new Audio();
+
 const ratingContainer = document.querySelector('.rating')
 
-const body =document.querySelector('#body');
+const body = document.querySelector('#body');
 
 
 let game = false;
@@ -16,6 +18,7 @@ const checkbox = document.querySelector('#checkboxMode');
 
 // начальная рисовка
 checkbox.onchange = () => {
+  document.querySelector('.rating').innerHTML='';
   if (checkbox.checked) {
     menu.classList.remove('menu-play');
     document.querySelector('.header-container').classList.remove('header-container_play');
@@ -26,6 +29,7 @@ checkbox.onchange = () => {
       const card = item;
       card.style.backgroundSize = 'contain';
       card.style.backgroundPosition = '';
+      card.classList.remove('card-right');
     });
     document.querySelectorAll('.icon-rotate').forEach((item) => {
       item.classList.remove('none');
@@ -35,6 +39,9 @@ checkbox.onchange = () => {
     });
     if (document.querySelector('.button-play')){
       document.querySelector('.button-play').classList.add('none');
+    }
+    if (document.querySelector('.btn-game')){
+      document.querySelector('.btn-game').classList.remove('btn-game_pressed')
     }
   } else {
     menu.classList.add('menu-play');
@@ -79,6 +86,7 @@ const drawCardsSection = (card, sectionName) => {
   audioSet =[];  
   audioValue =[]; 
   game=false;
+  document.querySelector('.rating').innerHTML='';
   containerCard.innerHTML = '';
   if (checkbox.checked) {
     if (sectionName === 'main') {
@@ -143,7 +151,7 @@ const drawCardsSection = (card, sectionName) => {
 let i = 0;
 let audioSet =[];  
 let audioValue =[]; 
-
+let errorCounter = 0;
 
 containerCard.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
@@ -169,6 +177,7 @@ containerCard.addEventListener('click', (event) => {
   else {
  
     if (card.classList.contains('btn-game')) { 
+      document.querySelector('.btn-game').classList.add('btn-game_pressed')
       if (!game){
         document.querySelectorAll('.front-side').forEach((item) => {
           const value = item.getAttribute('value');
@@ -187,40 +196,61 @@ containerCard.addEventListener('click', (event) => {
 
     if (card.classList.contains('front-side')){ 
       if (game){ 
-        let errorCounter = 0;
         if (sectionName===audioValue[i]){ 
+          //музыка
           audioEffects.src = './assets/audio/good.mp3'; 
           audioEffects.play() 
+          //добавить звездочку
           const resultGood = document.createElement('div');
           resultGood.classList.add('result_good')
           ratingContainer.prepend(resultGood);
           i++; 
+          if (i===8){
+            if (errorCounter===0){
+              setTimeout(() => {
+                document.querySelector('.header-container').classList.add('header-container_none');
+                document.querySelector('.rating').innerHTML='';
+                containerCard.innerHTML = ``;
+                body.classList.add('result-success')
+                audioEnd.src = './assets/audio/won.mp3'; 
+                audioEnd.play() 
+              }, 1000);
+            }
+            else {              
+              setTimeout(() => { 
+                document.querySelector('.header-container').classList.add('header-container_none');
+                document.querySelector('.rating').innerHTML='';
+                containerCard.innerHTML = `Колличество допущенных ошибок:${errorCounter}`;
+                body.classList.add('result-fail')
+                audioEnd.src = './assets/audio/fail.mp3'; 
+                audioEnd.play() 
+              }, 1000);
+            }
+            i=0;
+            audioSet =[];  
+            audioValue =[]; 
+            game=false;
+            setTimeout(() => { 
+              body.classList.remove('result-fail')
+              body.classList.remove('result-success')
+              document.querySelector('.header-container').classList.remove('header-container_none');
+              drawCardsSection(card, 'main');
+            }, 5000);
+          }
           card.classList.add('card-right');
           setTimeout(() => { 
             playAudio(audioSet[i])
-          }, 2000);
+          }, 1000);
         }
         else {
-          audioEffects.src = './assets/audio/bad.mp3'; 
-          audioEffects.play() 
-          const resultBad = document.createElement('div');
-          resultBad.classList.add('result_bad')
-          ratingContainer.prepend(resultBad);
-          errorCounter+=1;
-        }
-
-        if (i===8){
-          i=0;
-          audioSet =[];  
-          audioValue =[]; 
-          game=false;
-          document.querySelector('.wrapper').classList.add('body_result');
-          //body.innerHTML = `<div class="result-game" style="background-image: url(./assets/image/results/success.jpg);"></div>`
-          setTimeout(() => { 
-            document.querySelector('.wrapper').classList.remove('body_result');
-          }, 3000);
-          drawCardsSection(card, 'main');
-          document.querySelector('.rating').innerHTML='';
+          if(!card.classList.contains('card-right')){
+            audioEffects.src = './assets/audio/bad.mp3'; 
+            audioEffects.play() 
+            const resultBad = document.createElement('div');
+            resultBad.classList.add('result_bad')
+            ratingContainer.prepend(resultBad);
+            errorCounter+=1;
+          }
         }
       } 
     }
@@ -230,7 +260,7 @@ containerCard.addEventListener('click', (event) => {
 
 const playAudio = (item) => {
   audio.src = item; 
-  audio.play() 
+  audio.play();
 }
 
 
@@ -263,6 +293,7 @@ menu.addEventListener('click', (event) => {
   else {
 
     if (card.classList.contains('btn-game')) { 
+      document.querySelector('.btn-game').classList.add('btn-game_pressed')
       if (!game){
         document.querySelectorAll('.front-side').forEach((item) => {
           const value = item.getAttribute('value');
@@ -281,40 +312,61 @@ menu.addEventListener('click', (event) => {
 
     if (card.classList.contains('front-side')){ 
       if (game){ 
-        let errorCounter = 0;
         if (sectionName===audioValue[i]){ 
+          //музыка
           audioEffects.src = './assets/audio/good.mp3'; 
           audioEffects.play() 
+          //добавить звездочку
           const resultGood = document.createElement('div');
           resultGood.classList.add('result_good')
           ratingContainer.prepend(resultGood);
           i++; 
+          if (i===8){
+            if (errorCounter===0){
+              setTimeout(() => {
+                document.querySelector('.header-container').classList.add('header-container_none');
+                document.querySelector('.rating').innerHTML='';
+                containerCard.innerHTML = ``;
+                body.classList.add('result-success')
+                audioEnd.src = './assets/audio/won.mp3'; 
+                audioEnd.play() 
+              }, 1000);
+            }
+            else {              
+              setTimeout(() => { 
+                document.querySelector('.header-container').classList.add('header-container_none');
+                document.querySelector('.rating').innerHTML='';
+                containerCard.innerHTML = `Колличество допущенных ошибок:${errorCounter}`;
+                body.classList.add('result-fail')
+                audioEnd.src = './assets/audio/fail.mp3'; 
+                audioEnd.play() 
+              }, 1000);
+            }
+            i=0;
+            audioSet =[];  
+            audioValue =[]; 
+            game=false;
+            setTimeout(() => { 
+              body.classList.remove('result-fail')
+              body.classList.remove('result-success')
+              document.querySelector('.header-container').classList.remove('header-container_none');
+              drawCardsSection(card, 'main');
+            }, 5000);
+          }
           card.classList.add('card-right');
           setTimeout(() => { 
             playAudio(audioSet[i])
-          }, 2000);
+          }, 1000);
         }
         else {
-          audioEffects.src = './assets/audio/bad.mp3'; 
-          audioEffects.play() 
-          const resultBad = document.createElement('div');
-          resultBad.classList.add('result_bad')
-          ratingContainer.prepend(resultBad);
-          errorCounter+=1;
-        }
-
-        if (i===8){
-          i=0;
-          audioSet =[];  
-          audioValue =[]; 
-          game=false;
-          document.querySelector('.wrapper').classList.add('body_result');
-          //body.innerHTML = `<div class="result-game" style="background-image: url(./assets/image/results/success.jpg);"></div>`
-          setTimeout(() => { 
-            document.querySelector('.wrapper').classList.remove('body_result');
-          }, 3000);
-          drawCardsSection(card, 'main');
-          document.querySelector('.rating').innerHTML='';
+          if(!card.classList.contains('card-right')){
+            audioEffects.src = './assets/audio/bad.mp3'; 
+            audioEffects.play() 
+            const resultBad = document.createElement('div');
+            resultBad.classList.add('result_bad')
+            ratingContainer.prepend(resultBad);
+            errorCounter+=1;
+          }
         }
       } 
     }
