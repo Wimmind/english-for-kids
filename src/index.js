@@ -157,6 +157,14 @@ containerCard.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
 
+  document.querySelectorAll('.menu-item').forEach((item) => {
+    item.classList.remove('active-item');
+  });
+  document.querySelectorAll('.menu-item').forEach((item) => {
+    if (item.children[0].getAttribute('value')===sectionName){
+      item.classList.add('active-item');
+    }
+  });
 
   if (card.classList.contains('main-card')) {
     drawCardsSection(card, sectionName);
@@ -230,6 +238,7 @@ containerCard.addEventListener('click', (event) => {
             audioSet =[];  
             audioValue =[]; 
             game=false;
+            errorCounter=0
             setTimeout(() => { 
               body.classList.remove('result-fail')
               body.classList.remove('result-success')

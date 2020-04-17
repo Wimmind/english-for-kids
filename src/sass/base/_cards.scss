@@ -10,9 +10,11 @@
     border: solid $color-train 1px;
     align-items: center;
     color: rgb(13, 13, 119);
+    transition: 1s;
     &:hover {
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
         color: rgb(25, 25, 240);
+        transform: scale(1.2);
     }
     & img {
         margin: 30px auto;
@@ -39,7 +41,6 @@
     transition:box-shadow 0.2s linear,transform 0.7s;
     border-radius: 5px;
     background: linear-gradient( -45deg , #fff, $color-train);
-    
     &:hover {
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
         color: rgb(25, 25, 240);
