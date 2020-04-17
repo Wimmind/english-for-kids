@@ -178,7 +178,15 @@ containerCard.addEventListener('click', (event) => {
     if (card.classList.contains('icon-rotate')) {
       card.offsetParent.classList.add('translate');
       if (card.offsetParent.className === 'section-card translate') {
-        card.offsetParent.onmouseleave = () => card.offsetParent.classList.remove('translate');
+        card.offsetParent.onmouseleave = () => {
+          document.querySelectorAll('.section-card').forEach(item=>{
+            if(item.classList.contains('translate')){
+              card.offsetParent.classList.remove('translate');
+            }
+          })
+          
+          
+        }
       }
     }
   } 
