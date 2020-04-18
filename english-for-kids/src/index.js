@@ -88,11 +88,13 @@ body.addEventListener('click', (event) => {
   }
 });
 
-
-const playAudio = (item) => {
+// звуки слов
+const playAudioWord = (item) => {
   audio.src = item;
   audio.play();
 };
+
+
 
 // отрисовка карточек
 const drawCards = (card, sectionName) => {
@@ -117,6 +119,14 @@ const drawCards = (card, sectionName) => {
 
 // отрисовка карточек с текущим режимом
 const drawCardsSection = (card, sectionName) => {
+  document.querySelectorAll('.menu-item').forEach((item) => {
+    item.classList.remove('active-item');
+  });
+  document.querySelectorAll('.menu-item').forEach((item) => {
+    if (item.children[0].getAttribute('value') === sectionName) {
+      item.classList.add('active-item');
+    }
+  });
   i = 0;
   audioSet = [];
   audioValue = [];
@@ -165,63 +175,81 @@ const runGame = () => {
     });
     game = true;
   }
-  playAudio(audioSet[i]);
+  playAudioWord(audioSet[i]);
 };
 
+const removeResultStyles = (card) =>{
+  document.querySelector('.header-container').classList.remove('header-container_none');
+  drawCardsSection(card, 'main');
+  errorCounter = 0;
+  i = 0;
+}
 
-//
+const addResultStyles = (song) =>{
+  document.querySelector('.header-container').classList.add('header-container_none');
+  ratingContainer.innerHTML = '';
+  if(errorCounter>0){
+    containerCard.innerHTML = `Колличество допущенных ошибок:${errorCounter}`;
+  }
+  else {
+    containerCard.innerHTML = '';
+  }
+  audioEnd.src = song;
+  audioEnd.play();
+}
+
+//добавить звездочку
+const addStar = (star) => {
+  const resultGood = document.createElement('div');
+  resultGood.classList.add(`${star}`);
+  ratingContainer.prepend(resultGood);
+}
+
+// включать аудио во время игры и вывод результатов
 const playAudioCardAndEndGame = (card, sectionName) => {
   if (sectionName === audioValue[i]) {
     // музыка
     audioEffects.src = './assets/audio/good.mp3';
     audioEffects.play();
     // добавить звездочку
-    const resultGood = document.createElement('div');
-    resultGood.classList.add('result_good');
-    ratingContainer.prepend(resultGood);
+    addStar('result_good');
     i += 1;
     if (i === 8) {
       if (errorCounter === 0) {
         setTimeout(() => {
-          document.querySelector('.header-container').classList.add('header-container_none');
-          document.querySelector('.rating').innerHTML = '';
-          containerCard.innerHTML = '';
           body.classList.add('result-success');
-          audioEnd.src = './assets/audio/won.mp3';
-          audioEnd.play();
+          addResultStyles('./assets/audio/won.mp3')
         }, 1000);
+        setTimeout(() => {
+          body.classList.remove('result-success');
+          removeResultStyles(card);
+        }, 5000);
       } else {
         setTimeout(() => {
-          document.querySelector('.header-container').classList.add('header-container_none');
-          document.querySelector('.rating').innerHTML = '';
-          containerCard.innerHTML = `Колличество допущенных ошибок:${errorCounter}`;
           body.classList.add('result-fail');
-          audioEnd.src = './assets/audio/fail.mp3';
-          audioEnd.play();
+          addResultStyles('./assets/audio/fail.mp3')
         }, 1000);
+        setTimeout(() => {
+          body.classList.remove('result-fail');
+          removeResultStyles(card);
+        }, 5000);
       }
-      i = 0;
       audioSet = [];
       audioValue = [];
       game = false;
-      setTimeout(() => {
-        body.classList.remove('result-fail');
-        body.classList.remove('result-success');
-        document.querySelector('.header-container').classList.remove('header-container_none');
-        drawCardsSection(card, 'main');
-        errorCounter = 0;
-      }, 5000);
     }
     card.classList.add('card-right');
-    setTimeout(() => {
-      playAudio(audioSet[i]);
-    }, 1000);
+    if (i<8){
+      console.log(i)
+      setTimeout(() => {
+        playAudioWord(audioSet[i]);
+      }, 1000);
+    }
+
   } else if (!card.classList.contains('card-right')) {
     audioEffects.src = './assets/audio/bad.mp3';
     audioEffects.play();
-    const resultBad = document.createElement('div');
-    resultBad.classList.add('result_bad');
-    ratingContainer.prepend(resultBad);
+    addStar('result_bad');
     errorCounter += 1;
   }
 };
@@ -233,22 +261,12 @@ containerCard.addEventListener('click', (event) => {
 
   // отрисовка карточек на главной странице
   if (card.classList.contains('main-card')) {
-    // подчеркиваем активный элемент в меню
-    document.querySelectorAll('.menu-item').forEach((item) => {
-      item.classList.remove('active-item');
-    });
-    document.querySelectorAll('.menu-item').forEach((item) => {
-      if (item.children[0].getAttribute('value') === sectionName) {
-        item.classList.add('active-item');
-      }
-    });
     drawCardsSection(card, sectionName);
   }
   // если режим TRAIN
   if (checkbox.checked) {
     if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
-      audio.src = `https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`;
-      audio.play();
+      playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`)
     }
     if (card.classList.contains('icon-rotate')) {
       card.offsetParent.classList.add('translate');
@@ -277,16 +295,12 @@ containerCard.addEventListener('click', (event) => {
   }
 });
 
-
+// выбрал орисовку карт по меню
 menu.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
 
   if (card.tagName === 'A') {
-    document.querySelectorAll('.menu-item').forEach((item) => {
-      item.classList.remove('active-item');
-    });
-    card.parentElement.classList.add('active-item');
     menu.classList.toggle('menu-show');
     hamburger.classList.toggle('hamburger_active');
     errorCounter = 0;
@@ -295,8 +309,7 @@ menu.addEventListener('click', (event) => {
   // если режим TRAIN
   if (checkbox.checked) {
     if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
-      audio.src = `https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`;
-      audio.play();
+      playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`)
     }
     if (card.classList.contains('icon-rotate')) {
       card.parentElement.classList.add('translate');
@@ -318,3 +331,5 @@ menu.addEventListener('click', (event) => {
     }
   }
 });
+
+
