@@ -1,4 +1,4 @@
-import { cards } from './js/cards';
+import cards from './js/cards';
 
 const containerCard = document.querySelector('.container');
 const mainPage = containerCard.innerHTML;
@@ -15,12 +15,55 @@ const ratingContainer = document.querySelector('.rating');
 
 const body = document.querySelector('#body');
 
+
 let game = false;
 let i = 0;
 let audioSet = [];
 let audioValue = [];
 let errorCounter = 0;
 
+let cardArrayZero = [];
+let cardArray = [];
+
+if (localStorage.getItem('cardArray')!==undefined && localStorage.getItem('cardArray')!==null){
+  cardArray = JSON.parse(localStorage.getItem('cardArray'));
+}
+
+else {
+  for (let i = 1; i < 9; i += 1) {
+    cards[i].forEach((item) => {
+      cardArray.push(item);
+      cardArrayZero.push(item);
+    });
+  }
+}
+
+
+
+
+const noteTrainClick = (sectionName) => {
+  cardArray.forEach((item) => {
+    if (item.word === sectionName) {
+      item.trainClick += 1;
+    }
+  });
+};
+
+const noteCorrectAnswer = (sectionName) => {
+  cardArray.forEach((item) => {
+    if (item.word === sectionName) {
+      item.correctAnswer += 1;
+    }
+  });
+};
+
+const noteErrorAnswer = (sectionName) => {
+  cardArray.forEach((item) => {
+    if (item.word === sectionName) {
+      item.errorAnswer += 1;
+    }
+  });
+};
 
 const checkbox = document.querySelector('#checkboxMode');
 
@@ -93,7 +136,6 @@ const playAudioWord = (item) => {
   audio.src = item;
   audio.play();
 };
-
 
 
 // отрисовка карточек
@@ -178,36 +220,36 @@ const runGame = () => {
   playAudioWord(audioSet[i]);
 };
 
-const removeResultStyles = (card) =>{
+const removeResultStyles = (card) => {
   document.querySelector('.header-container').classList.remove('header-container_none');
   drawCardsSection(card, 'main');
   errorCounter = 0;
   i = 0;
-}
+};
 
-const addResultStyles = (song) =>{
+const addResultStyles = (song) => {
   document.querySelector('.header-container').classList.add('header-container_none');
   ratingContainer.innerHTML = '';
-  if(errorCounter>0){
+  if (errorCounter > 0) {
     containerCard.innerHTML = `Колличество допущенных ошибок:${errorCounter}`;
-  }
-  else {
+  } else {
     containerCard.innerHTML = '';
   }
   audioEnd.src = song;
   audioEnd.play();
-}
+};
 
-//добавить звездочку
+// добавить звездочку
 const addStar = (star) => {
   const resultGood = document.createElement('div');
   resultGood.classList.add(`${star}`);
   ratingContainer.prepend(resultGood);
-}
+};
 
 // включать аудио во время игры и вывод результатов
 const playAudioCardAndEndGame = (card, sectionName) => {
   if (sectionName === audioValue[i]) {
+    noteCorrectAnswer(sectionName);
     // музыка
     audioEffects.src = './assets/audio/good.mp3';
     audioEffects.play();
@@ -218,7 +260,7 @@ const playAudioCardAndEndGame = (card, sectionName) => {
       if (errorCounter === 0) {
         setTimeout(() => {
           body.classList.add('result-success');
-          addResultStyles('./assets/audio/won.mp3')
+          addResultStyles('./assets/audio/won.mp3');
         }, 1000);
         setTimeout(() => {
           body.classList.remove('result-success');
@@ -227,7 +269,7 @@ const playAudioCardAndEndGame = (card, sectionName) => {
       } else {
         setTimeout(() => {
           body.classList.add('result-fail');
-          addResultStyles('./assets/audio/fail.mp3')
+          addResultStyles('./assets/audio/fail.mp3');
         }, 1000);
         setTimeout(() => {
           body.classList.remove('result-fail');
@@ -239,14 +281,13 @@ const playAudioCardAndEndGame = (card, sectionName) => {
       game = false;
     }
     card.classList.add('card-right');
-    if (i<8){
-      console.log(i)
+    if (i < 8) {
       setTimeout(() => {
         playAudioWord(audioSet[i]);
       }, 1000);
     }
-
   } else if (!card.classList.contains('card-right')) {
+    noteErrorAnswer(sectionName);
     audioEffects.src = './assets/audio/bad.mp3';
     audioEffects.play();
     addStar('result_bad');
@@ -254,19 +295,19 @@ const playAudioCardAndEndGame = (card, sectionName) => {
   }
 };
 
-// выбрал орисовку карт по контейнеру
+
 containerCard.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
 
-  // отрисовка карточек на главной странице
   if (card.classList.contains('main-card')) {
     drawCardsSection(card, sectionName);
   }
-  // если режим TRAIN
+
   if (checkbox.checked) {
     if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
-      playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`)
+      playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`);
+      noteTrainClick(sectionName);
     }
     if (card.classList.contains('icon-rotate')) {
       card.offsetParent.classList.add('translate');
@@ -300,36 +341,111 @@ menu.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
 
-  if (card.tagName === 'A') {
-    menu.classList.toggle('menu-show');
-    hamburger.classList.toggle('hamburger_active');
-    errorCounter = 0;
-    drawCardsSection(card, sectionName);
-  }
-  // если режим TRAIN
-  if (checkbox.checked) {
-    if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
-      playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`)
+  if (card.parentNode.classList.contains('menu-item_score')) {
+    showScore();
+  } else {
+    if (card.tagName === 'A') {
+      menu.classList.toggle('menu-show');
+      hamburger.classList.toggle('hamburger_active');
+      errorCounter = 0;
+      drawCardsSection(card, sectionName);
     }
-    if (card.classList.contains('icon-rotate')) {
-      card.parentElement.classList.add('translate');
-      if (card.parentElement.className === 'section-card translate') {
-        card.parentElement.onmouseleave = () => card.parentElement.classList.remove('translate');
+    // если режим TRAIN
+    if (checkbox.checked) {
+      if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
+        playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`);
+      }
+      if (card.classList.contains('icon-rotate')) {
+        card.offsetParent.classList.add('translate');
+        document.querySelector('.icon-rotate').classList.add('none');
+        if (card.offsetParent.className === 'section-card translate') {
+          card.offsetParent.onmouseleave = () => {
+            document.querySelectorAll('.section-card').forEach((item) => {
+              if (item.classList.contains('translate')) {
+                card.offsetParent.classList.remove('translate');
+                document.querySelector('.icon-rotate').classList.remove('none');
+              }
+            });
+          };
+        }
       }
     }
-  }
-
-  // если режим PLAY
-  else {
-    if (card.classList.contains('btn-game')) {
-      runGame();
-    }
-    if (card.classList.contains('front-side')) {
-      if (game) {
-        playAudioCardAndEndGame(card, sectionName);
+    // если режим PLAY
+    else {
+      if (card.classList.contains('btn-game')) {
+        runGame();
+      }
+      if (card.classList.contains('front-side')) {
+        if (game) {
+          playAudioCardAndEndGame(card, sectionName);
+        }
       }
     }
   }
 });
+
+const showScore = () => {
+  containerCard.innerHTML = '';
+  containerCard.innerHTML = `<table class="table-statistics" id="grid">
+  <thead><tr>
+  <th data-type="string">word</th>
+  <th data-type="string">translate</th>
+  <th data-type="number">train clicks</th>
+  <th data-type="number">correct answer</th>
+  <th data-type="number">error answer</th><th>% errors</th>
+  </tr></thead>
+  <tbody></tbody>
+  </table>`;
+
+  cardArray.forEach((item) => {
+    let error = (item.correctAnswer * 100 / (item.correctAnswer + item.errorAnswer)).toFixed(2);
+    if (isNaN(error)) {
+      error = '0.00';
+    }
+    document.querySelector('.table-statistics tbody').innerHTML += `<tr>
+    <td>${item.word}</td>
+    <td>${item.translation}</td>
+    <td>${item.trainClick}</td>
+    <td>${item.correctAnswer}</td>
+    <td>${item.errorAnswer}</td>
+    <td>${error}%</td>
+    </tr>`;
+  });
+
+  let rowsArray = Array.from(tbody.rows);
+  let rowsArrayOriginal = rowsArray;
+
+  document.querySelector('#grid').addEventListener('click', (e)=>{
+    if (e.target.tagName != 'TH') return;
+    let th = e.target;
+    let sort = false
+    sortGrid(th.cellIndex, th.dataset.type,sort);
+  });
+  
+  function sortGrid(colNum, type,sort) {
+    let tbody = grid.querySelector('tbody');
+    let compare;
+    
+    switch (type) {
+      case 'number':
+        compare = function(rowA, rowB) {
+          return rowA.cells[colNum].innerHTML - rowB.cells[colNum].innerHTML;
+        };
+        break;
+      case 'string':
+        compare = function(rowA, rowB) {
+          return rowA.cells[colNum].innerHTML > rowB.cells[colNum].innerHTML ? 1 : -1;
+        };
+        break;
+    }
+    rowsArray.sort(compare);
+    tbody.append(...rowsArray);
+  }
+
+};
+
+window.onbeforeunload = function() {
+  localStorage.setItem('cardArray', JSON.stringify(cardArray));
+};
 
 

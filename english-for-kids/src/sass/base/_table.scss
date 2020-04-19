@@ -1,0 +1,28 @@
+.table-statistics {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    box-sizing: border-box;
+    & tr {
+        display: flex;
+    }
+    & th {
+        color: #fff;
+        cursor: pointer;
+        user-select: none;
+        background-color: #32830c;
+    }
+}
+
+.table-statistics td, .table-statistics th {
+    width: 16%;
+    padding: 10px 10px 10px 5px;
+    font-size: 14px;
+    text-align: center;
+    word-wrap: break-word;
+    border: 1px solid #ccc;
+}
+
+th:hover{
+    background: #173b06;
+}
