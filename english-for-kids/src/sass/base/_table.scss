@@ -10,19 +10,69 @@
         color: #fff;
         cursor: pointer;
         user-select: none;
-        background-color: #32830c;
+        background: linear-gradient(to right top, #1b5500, #32830c);
+        position: relative;
+        &::after {
+            position: absolute;
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: url(../assets/image/increase-arrow.png);
+            background-size: cover;
+            @include media-tablet_big {
+                bottom: -4px;
+                left: 43%;
+            }
+            background-size: cover;
+        }
     }
 }
 
 .table-statistics td, .table-statistics th {
     width: 16%;
-    padding: 10px 10px 10px 5px;
-    font-size: 14px;
+    padding: 10px;
+    font-size: 16px;
     text-align: center;
     word-wrap: break-word;
     border: 1px solid #ccc;
+    @include media-tablet_big {
+        font-size: 12px;
+        padding: 10px 0px;
+    }
 }
 
 th:hover{
-    background: #173b06;
+    background: linear-gradient(to right top, #32830c, #1b5500);
+}
+
+.sort_up{
+    &::after {
+        position: absolute;
+        content: "";
+        width: 20px;
+        height: 20px;
+        background: url(../assets/image/increase-arrow.png);
+        background-size: cover;
+        @include media-tablet_big {
+            bottom: -4px;
+            left: 43%;
+        }
+        
+    }
+}
+
+.sort_down{
+    &::after {
+        position: absolute;
+        transform: rotate(180deg);
+        content: "";
+        width: 20px;
+        height: 20px;
+        background: url(../assets/image/increase-arrow.png);
+        background-size: cover;
+        @include media-tablet_big {
+            bottom: -4px;
+            left: 43%;
+        }
+    }
 }

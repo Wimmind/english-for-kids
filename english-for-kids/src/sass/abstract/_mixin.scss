@@ -7,3 +7,6 @@
 @mixin media-mobile {
     @media (max-width: 505px) { @content; }
 }
+@mixin media-tablet_big {
+    @media (max-width: 787px) { @content; }
+}

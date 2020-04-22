@@ -28,38 +28,42 @@
         }
         &::before {
             position: absolute;
+            width: 30px;
+            height: 30px;
             margin-top: -4px;
             left: 40px;
+            content: " ";
+            background-size: cover;
         }
         &_home::before {
-            content: "🏠";
+            background-image: url(../assets/image/menu/home.png);
         }
         &_actionA::before {
-            content: "💃";
+            background-image: url(../assets/image/menu/dancer.png);
         }
         &_actionB::before {
-            content: "🏊‍♂️";
+            background-image: url(../assets/image/menu/man-swimming.png);
         }
         &_actionC::before {
-            content: "🏗️";
+            background-image: url(../assets/image/menu/building-construction.png);
         }
         &_adjective::before {
-            content: "🧒";
+            background-image: url(../assets/image/menu/child.png);
         }
         &_animalA::before {
-            content: "🐈";
+            background-image: url(../assets/image/menu/cat.png);
         }
         &_animalB::before {
-            content: "🐦";
+            background-image: url(../assets/image/menu/bird.png);
         }
         &_clothes::before {
-            content: "👚";
+            background-image: url(../assets/image/menu/blouse.png);
         }
         &_emotions::before {
-            content: "😊";
+            background-image: url(../assets/image/menu/smiling-face.png);
         }
         &_score::before {
-            content: "💯";
+            background-image: url(../assets/image/menu/hundred-points-symbol.png);
         }
     }
 }

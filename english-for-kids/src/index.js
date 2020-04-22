@@ -3,74 +3,67 @@ import cards from './js/cards';
 const containerCard = document.querySelector('.container');
 const mainPage = containerCard.innerHTML;
 const menu = document.querySelector('.menu');
-
-
 const audio = new Audio();
 const audioEffects = new Audio();
 const audioEnd = new Audio();
-
 const hamburger = document.querySelector('.hamburger');
-
 const ratingContainer = document.querySelector('.rating');
-
 const body = document.querySelector('#body');
-
-
 let game = false;
 let i = 0;
 let audioSet = [];
 let audioValue = [];
 let errorCounter = 0;
-
-let cardArrayZero = [];
+const cardArrayNull = [];
 let cardArray = [];
 
-if (localStorage.getItem('cardArray')!==undefined && localStorage.getItem('cardArray')!==null){
+
+for (let j = 1; j < 9; j += 1) {
+  cards[j].forEach((item) => {
+    cardArray.push(item);
+    cardArrayNull.push(item);
+  });
+}
+if (localStorage.getItem('cardArray')) {
   cardArray = JSON.parse(localStorage.getItem('cardArray'));
 }
 
-else {
-  for (let i = 1; i < 9; i += 1) {
-    cards[i].forEach((item) => {
-      cardArray.push(item);
-      cardArrayZero.push(item);
-    });
-  }
-}
-
-
-
-
 const noteTrainClick = (sectionName) => {
   cardArray.forEach((item) => {
-    if (item.word === sectionName) {
-      item.trainClick += 1;
+    const card = item;
+    if (card.word === sectionName) {
+      card.trainClick += 1;
     }
   });
 };
 
 const noteCorrectAnswer = (sectionName) => {
   cardArray.forEach((item) => {
-    if (item.word === sectionName) {
-      item.correctAnswer += 1;
+    const card = item;
+    if (card.word === sectionName) {
+      card.correctAnswer += 1;
     }
   });
 };
 
 const noteErrorAnswer = (sectionName) => {
   cardArray.forEach((item) => {
-    if (item.word === sectionName) {
-      item.errorAnswer += 1;
+    const card = item;
+    if (card.word === sectionName) {
+      card.errorAnswer += 1;
     }
   });
 };
 
 const checkbox = document.querySelector('#checkboxMode');
 
-// начальная рисовка
 checkbox.onchange = () => {
   document.querySelector('.rating').innerHTML = '';
   if (checkbox.checked) {
+    i = 0;
+    audioSet = [];
+    audioValue = [];
+    game = false;
     menu.classList.remove('menu-play');
     document.querySelector('.header-container').classList.remove('header-container_play');
     document.querySelectorAll('.main-card').forEach((item) => {
@@ -118,7 +111,6 @@ checkbox.onchange = () => {
 };
 
 
-// гамбургер клик
 hamburger.addEventListener('click', () => {
   menu.classList.toggle('menu-show');
   hamburger.classList.toggle('hamburger_active');
@@ -131,14 +123,11 @@ body.addEventListener('click', (event) => {
   }
 });
 
-// звуки слов
 const playAudioWord = (item) => {
   audio.src = item;
   audio.play();
 };
 
-
-// отрисовка карточек
 const drawCards = (card, sectionName) => {
   localStorage.setItem('sectionName', sectionName);
   let section;
@@ -159,7 +148,6 @@ const drawCards = (card, sectionName) => {
   containerCard.innerHTML += '<div class="button-play"><button class="btn-game">Start Game</button></div>';
 };
 
-// отрисовка карточек с текущим режимом
 const drawCardsSection = (card, sectionName) => {
   document.querySelectorAll('.menu-item').forEach((item) => {
     item.classList.remove('active-item');
@@ -203,7 +191,7 @@ const drawCardsSection = (card, sectionName) => {
   }
 };
 
-// запустить игру
+
 const runGame = () => {
   document.querySelector('.btn-game').classList.add('btn-game_pressed');
   if (!game) {
@@ -239,21 +227,18 @@ const addResultStyles = (song) => {
   audioEnd.play();
 };
 
-// добавить звездочку
 const addStar = (star) => {
   const resultGood = document.createElement('div');
   resultGood.classList.add(`${star}`);
   ratingContainer.prepend(resultGood);
 };
 
-// включать аудио во время игры и вывод результатов
+
 const playAudioCardAndEndGame = (card, sectionName) => {
   if (sectionName === audioValue[i]) {
     noteCorrectAnswer(sectionName);
-    // музыка
     audioEffects.src = './assets/audio/good.mp3';
     audioEffects.play();
-    // добавить звездочку
     addStar('result_good');
     i += 1;
     if (i === 8) {
@@ -287,7 +272,7 @@ const playAudioCardAndEndGame = (card, sectionName) => {
       }, 1000);
     }
   } else if (!card.classList.contains('card-right')) {
-    noteErrorAnswer(sectionName);
+    noteErrorAnswer(audioValue[i]);
     audioEffects.src = './assets/audio/bad.mp3';
     audioEffects.play();
     addStar('result_bad');
@@ -295,12 +280,131 @@ const playAudioCardAndEndGame = (card, sectionName) => {
   }
 };
 
+function createTable(array) {
+  containerCard.innerHTML = `<table class="table-statistics" id="grid">
+  <thead><tr>
+  <th data-type="string" class="">word</th>
+  <th data-type="string">translate</th>
+  <th data-type="number">train clicks</th>
+  <th data-type="number">correct answer</th>
+  <th data-type="number">error answer</th>
+  <th data-type="number">% errors</th>
+  </tr></thead>
+  <tbody></tbody>
+  </table>`;
+
+  array.forEach((item) => {
+    let error = ((item.errorAnswer * 100) / (item.correctAnswer + item.errorAnswer)).toFixed(2);
+    if (item.correctAnswer === 0 && item.errorAnswer === 0) {
+      error = (0.00).toFixed(2);
+    }
+    document.querySelector('.table-statistics tbody').innerHTML += `<tr>
+    <td>${item.word}</td>
+    <td>${item.translation}</td>
+    <td>${item.trainClick}</td>
+    <td>${item.correctAnswer}</td>
+    <td>${item.errorAnswer}</td>
+    <td>${error}</td>
+    </tr>`;
+  });
+}
+
+const sortTable = (colNum, type, th) => {
+  const grid = document.querySelector('#grid');
+  const tbody = grid.querySelector('tbody');
+
+  const rowsArray = Array.from(tbody.rows);
+  let compare;
+
+  switch (type) {
+    case 'number':
+      compare = function (rowA, rowB) {
+        return rowA.cells[colNum].innerHTML - rowB.cells[colNum].innerHTML;
+      };
+      break;
+    case 'string':
+      compare = function (rowA, rowB) {
+        return rowA.cells[colNum].innerHTML > rowB.cells[colNum].innerHTML ? 1 : -1;
+      };
+      break;
+    default:
+  }
+
+  if (th.classList.contains('sort_down')) {
+    th.classList.remove('sort_down');
+    th.classList.add('sort_up');
+    rowsArray.sort(compare).reverse();
+  } else {
+    th.classList.remove('sort_up');
+    th.classList.add('sort_down');
+    rowsArray.sort(compare);
+  }
+
+
+  tbody.append(...rowsArray);
+};
+
+const showScore = () => {
+  document.querySelectorAll('.menu-item').forEach((item) => {
+    item.classList.remove('active-item');
+  });
+  document.querySelectorAll('.menu-item').forEach((item) => {
+    if (item.children[0].getAttribute('value') === 'score') {
+      item.classList.add('active-item');
+    }
+  });
+
+  document.querySelector('.onoffswitch').classList.add('onoffswitch-checkbox');
+  document.querySelector('.rating').innerHTML = '<button class="clear-table">Clear</button><button class="show-words">Repeat difficult words</button>';
+  createTable(cardArray);
+
+  document.querySelector('.clear-table').addEventListener('click', () => {
+    cardArray = cardArrayNull;
+    createTable(cardArray);
+  });
+
+  document.querySelector('.show-words').addEventListener('click', () => {
+    let errorArray = [];
+    cardArray.forEach((item) => {
+      let error = ((item.errorAnswer * 100) / (item.correctAnswer + item.errorAnswer)).toFixed(2);
+      if (item.correctAnswer === 0 && item.errorAnswer === 0) {
+        error = (0.00).toFixed(2);
+      }
+      if (error !== '0.00') {
+        errorArray.push({
+          word: item.word, translation: item.translation, image: item.image, error,
+        });
+      }
+    });
+    containerCard.innerHTML = '';
+    ratingContainer.innerHTML = '';
+
+    if (errorArray.length > 7) {
+      errorArray = errorArray.slice(0, 8);
+    }
+    errorArray.forEach((item) => {
+      containerCard.innerHTML += `
+      <div class='section-card'> 
+      <div class='front-side' value='${item.word}' style="background-image: url(./assets/image/cards/${item.image});"> <span class='card-name '> ${item.word} </span></div> 
+      <div class='back-side' style="background-image: url(./assets/image/cards/${item.image});"> <span class='card-name '> ${item.translation} </span></div> 
+      </div> `;
+    });
+  });
+  const grid = document.querySelector('#grid');
+  grid.addEventListener('click', (event) => {
+    if (event.target.tagName === 'TH') {
+      const th = event.target;
+      sortTable(th.cellIndex, th.dataset.type, th);
+    }
+  });
+};
+
 
 containerCard.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
 
-  if (card.classList.contains('main-card')) {
+  if (card.classList.contains('main-card') || card.parentNode.classList.contains('main-card')) {
     drawCardsSection(card, sectionName);
   }
 
@@ -321,10 +425,7 @@ containerCard.addEventListener('click', (event) => {
         };
       }
     }
-  }
-
-  // если режим PLAY
-  else {
+  } else {
     if (card.classList.contains('btn-game')) {
       runGame();
     }
@@ -336,7 +437,7 @@ containerCard.addEventListener('click', (event) => {
   }
 });
 
-// выбрал орисовку карт по меню
+
 menu.addEventListener('click', (event) => {
   const sectionName = event.target.getAttribute('value');
   const card = event.target;
@@ -344,13 +445,16 @@ menu.addEventListener('click', (event) => {
   if (card.parentNode.classList.contains('menu-item_score')) {
     showScore();
   } else {
+    if (document.querySelector('.onoffswitch').classList.contains('onoffswitch-checkbox')) {
+      document.querySelector('.onoffswitch').classList.remove('onoffswitch-checkbox');
+    }
     if (card.tagName === 'A') {
       menu.classList.toggle('menu-show');
       hamburger.classList.toggle('hamburger_active');
       errorCounter = 0;
       drawCardsSection(card, sectionName);
     }
-    // если режим TRAIN
+
     if (checkbox.checked) {
       if (card.classList.contains('front-side') && !card.classList.contains('rotate')) {
         playAudioWord(`https://wooordhunt.ru/data/sound/word/us/mp3/${sectionName}.mp3`);
@@ -359,7 +463,7 @@ menu.addEventListener('click', (event) => {
         card.offsetParent.classList.add('translate');
         document.querySelector('.icon-rotate').classList.add('none');
         if (card.offsetParent.className === 'section-card translate') {
-          card.offsetParent.onmouseleave = () => {
+          card.parentNode.parentNode.onmouseleave = () => {
             document.querySelectorAll('.section-card').forEach((item) => {
               if (item.classList.contains('translate')) {
                 card.offsetParent.classList.remove('translate');
@@ -369,9 +473,7 @@ menu.addEventListener('click', (event) => {
           };
         }
       }
-    }
-    // если режим PLAY
-    else {
+    } else {
       if (card.classList.contains('btn-game')) {
         runGame();
       }
@@ -384,68 +486,7 @@ menu.addEventListener('click', (event) => {
   }
 });
 
-const showScore = () => {
-  containerCard.innerHTML = '';
-  containerCard.innerHTML = `<table class="table-statistics" id="grid">
-  <thead><tr>
-  <th data-type="string">word</th>
-  <th data-type="string">translate</th>
-  <th data-type="number">train clicks</th>
-  <th data-type="number">correct answer</th>
-  <th data-type="number">error answer</th><th>% errors</th>
-  </tr></thead>
-  <tbody></tbody>
-  </table>`;
 
-  cardArray.forEach((item) => {
-    let error = (item.correctAnswer * 100 / (item.correctAnswer + item.errorAnswer)).toFixed(2);
-    if (isNaN(error)) {
-      error = '0.00';
-    }
-    document.querySelector('.table-statistics tbody').innerHTML += `<tr>
-    <td>${item.word}</td>
-    <td>${item.translation}</td>
-    <td>${item.trainClick}</td>
-    <td>${item.correctAnswer}</td>
-    <td>${item.errorAnswer}</td>
-    <td>${error}%</td>
-    </tr>`;
-  });
-
-  let rowsArray = Array.from(tbody.rows);
-  let rowsArrayOriginal = rowsArray;
-
-  document.querySelector('#grid').addEventListener('click', (e)=>{
-    if (e.target.tagName != 'TH') return;
-    let th = e.target;
-    let sort = false
-    sortGrid(th.cellIndex, th.dataset.type,sort);
-  });
-  
-  function sortGrid(colNum, type,sort) {
-    let tbody = grid.querySelector('tbody');
-    let compare;
-    
-    switch (type) {
-      case 'number':
-        compare = function(rowA, rowB) {
-          return rowA.cells[colNum].innerHTML - rowB.cells[colNum].innerHTML;
-        };
-        break;
-      case 'string':
-        compare = function(rowA, rowB) {
-          return rowA.cells[colNum].innerHTML > rowB.cells[colNum].innerHTML ? 1 : -1;
-        };
-        break;
-    }
-    rowsArray.sort(compare);
-    tbody.append(...rowsArray);
-  }
-
-};
-
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
   localStorage.setItem('cardArray', JSON.stringify(cardArray));
 };
-
-
