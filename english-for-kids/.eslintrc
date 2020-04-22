@@ -7,5 +7,8 @@
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
+    },
+    "rules": {
+        "no-loop-func" : 0
     }
 }

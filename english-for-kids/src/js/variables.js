@@ -1,0 +1,9 @@
+export const containerCard = document.querySelector('.container');
+export const mainPage = containerCard.innerHTML;
+export const menu = document.querySelector('.menu');
+export const audio = new Audio();
+export const audioEffects = new Audio();
+export const audioEnd = new Audio();
+export const hamburger = document.querySelector('.hamburger');
+export const ratingContainer = document.querySelector('.rating');
+export const body = document.querySelector('#body');

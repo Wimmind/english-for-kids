@@ -1,14 +1,9 @@
 import cards from './js/cards';
+import {
+  containerCard, mainPage, menu, audio, audioEffects, audioEnd,
+  hamburger, ratingContainer, body,
+} from './js/variables';
 
-const containerCard = document.querySelector('.container');
-const mainPage = containerCard.innerHTML;
-const menu = document.querySelector('.menu');
-const audio = new Audio();
-const audioEffects = new Audio();
-const audioEnd = new Audio();
-const hamburger = document.querySelector('.hamburger');
-const ratingContainer = document.querySelector('.rating');
-const body = document.querySelector('#body');
 let game = false;
 let i = 0;
 let audioSet = [];
@@ -27,6 +22,7 @@ for (let j = 1; j < 9; j += 1) {
 if (localStorage.getItem('cardArray')) {
   cardArray = JSON.parse(localStorage.getItem('cardArray'));
 }
+
 
 const noteTrainClick = (sectionName) => {
   cardArray.forEach((item) => {

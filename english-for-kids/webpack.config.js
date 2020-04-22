@@ -7,7 +7,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     entry: ['./src/index.js','./src/sass/main.scss'],
     output: {
         path: path.join(__dirname, '/dist'),
